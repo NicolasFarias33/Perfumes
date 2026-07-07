@@ -1,0 +1,16 @@
+# Node / React (Frontend)
+node_modules/
+dist/
+build/
+
+# Visual Studio (IDE)
+.vs/
+*.user
+*.suo
+
+# Java / Spring Boot (Backend)
+target/
+*.class
+
+# Variables de entorno
+.env
