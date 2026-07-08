@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   database:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -12,6 +10,26 @@ services:
       - MSSQL_PID=Developer
     volumes:
       - sqlserver_data:/var/opt/mssql
+
+  backend:
+    build: ./backend
+    container_name: essenza_backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:sqlserver://database:1433;databaseName=db_essenza;encrypt=true;trustServerCertificate=true;
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=Contra1234
+
+  frontend:
+    build: ./frontend
+    container_name: essenza_frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
 
 volumes:
   sqlserver_data:
