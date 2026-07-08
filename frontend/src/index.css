@@ -1,0 +1,54 @@
+/* Importar una tipografía elegante (Playfair Display) para títulos */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400&display=swap');
+
+:root {
+  --essenza-black: #111111; /* Negro profundo */
+  --essenza-gold: #b5a072;  /* Dorado antiguo (del logo) */
+  --essenza-card-bg: #1a1a1a; /* Un negro ligeramente más claro para las tarjetas */
+  
+  /* Fuentes */
+  --font-titles: 'Playfair Display', serif;
+  --font-body: 'Roboto', sans-serif;
+}
+
+body {
+  margin: 0;
+  background-color: var(--essenza-black);
+  color: var(--essenza-gold);
+  font-family: var(--font-body);
+  /* Fondo sutil con textura de papel (opcional, imitando el logo) */
+  background-image: url('https://www.transparenttextures.com/patterns/dark-paper.png');
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-titles);
+  color: var(--essenza-gold);
+}
+
+/* Retoques globales a Bootstrap para adaptarlos a la paleta */
+.text-muted { color: #888 !important; }
+.bg-light { background-color: var(--essenza-black) !important; }
+.border-top, .border-bottom { border-color: #333 !important; }
+
+/* Botones personalizados estilo oro bruñido */
+.btn-gold {
+  background-color: var(--essenza-gold);
+  color: var(--essenza-black);
+  border: 1px solid var(--essenza-gold);
+}
+
+.btn-gold:hover {
+  background-color: #f2e8d1; /* Un dorado más claro al pasar el mouse */
+  border-color: #f2e8d1;
+  color: var(--essenza-black);
+}
+
+.card-gold-trim {
+  border: 1px solid rgba(181, 160, 114, 0.2); /* Borde dorado muy sutil */
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card-gold-trim:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(181, 160, 114, 0.1);
+}
