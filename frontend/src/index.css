@@ -1,111 +1,54 @@
+/* Importar una tipografía elegante (Playfair Display) para títulos */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400&display=swap');
+
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+  --essenza-black: #111111; /* Negro profundo */
+  --essenza-gold: #b5a072;  /* Dorado antiguo (del logo) */
+  --essenza-card-bg: #1a1a1a; /* Un negro ligeramente más claro para las tarjetas */
+  
+  /* Fuentes */
+  --font-titles: 'Playfair Display', serif;
+  --font-body: 'Roboto', sans-serif;
 }
 
 body {
   margin: 0;
+  background-color: var(--essenza-black);
+  color: var(--essenza-gold);
+  font-family: var(--font-body);
+  /* Fondo sutil con textura de papel (opcional, imitando el logo) */
+  background-image: url('https://www.transparenttextures.com/patterns/dark-paper.png');
 }
 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+h1, h2, h3, h4 {
+  font-family: var(--font-titles);
+  color: var(--essenza-gold);
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+/* Retoques globales a Bootstrap para adaptarlos a la paleta */
+.text-muted { color: #888 !important; }
+.bg-light { background-color: var(--essenza-black) !important; }
+.border-top, .border-bottom { border-color: #333 !important; }
+
+/* Botones personalizados estilo oro bruñido */
+.btn-gold {
+  background-color: var(--essenza-gold);
+  color: var(--essenza-black);
+  border: 1px solid var(--essenza-gold);
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
+.btn-gold:hover {
+  background-color: #f2e8d1; /* Un dorado más claro al pasar el mouse */
+  border-color: #f2e8d1;
+  color: var(--essenza-black);
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+.card-gold-trim {
+  border: 1px solid rgba(181, 160, 114, 0.2); /* Borde dorado muy sutil */
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+.card-gold-trim:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(181, 160, 114, 0.1);
 }
