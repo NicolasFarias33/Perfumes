@@ -1,59 +1,35 @@
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import logoEssenza from './assets/essenza-logo.jpg'; 
-
-const perfumesTemporales = [
-  { 
-    id: 1, 
-    nombre: "Brisa de Algodón", 
-    categoria: "Textil", 
-    descripcion: "Fragancia suave y persistente, ideal para sábanas. Notas limpias con destellos florales.", 
-    precio: 4500 
-  },
-  { 
-    id: 2, 
-    nombre: "Vainilla & Coco Supreme", 
-    categoria: "Textil", 
-    descripcion: "Un aroma dulce, cálido y reconfortante para tus ambientes.", 
-    precio: 4500 
-  },
-  { 
-    id: 3, 
-    nombre: "Ambar Noir (Inspiración)", 
-    categoria: "Personal", 
-    descripcion: "Eau de Parfum intenso. Notas de fondo amaderadas y especiadas.", 
-    precio: 12000 
-  }
-];
+import logoEssenza from './assets/essenza-logo.jpg';
 
 function Catalogo() {
-  const whatsappContacto = "3515414073"; 
+  const whatsappContacto = "5493510000000";
+  const [productos, setProductos] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:8080/api/productos')
+      .then(response => response.json())
+      .then(data => setProductos(data))
+      .catch(error => console.error('Error al obtener los productos:', error));
+  }, []);
 
   return (
     <div className="min-vh-100">
       <header className="border-bottom py-3 mb-4" style={{ backgroundColor: 'var(--essenza-black)', borderColor: '#222' }}>
         <div className="container d-flex justify-content-between align-items-center">
           <img 
-              src={logoEssenza} 
-              alt="Logo Essenza" 
-              style={{ 
-                height: '65px', 
-                width: '65px', 
-                objectFit: 'cover',
-                borderRadius: '20px' 
-              }} 
+            src={logoEssenza} 
+            alt="Logo Essenza" 
+            style={{ height: '65px', width: '65px', objectFit: 'cover', borderRadius: '18px' }} 
           />
-          <h1 className="m-0" style={{ 
-            fontFamily: 'var(--font-titles)', 
-            color: 'var(--essenza-gold)',
-            fontSize: '2.3rem',
-            letterSpacing: '1px'
-          }}>
+          <h1 className="m-0" style={{ fontFamily: 'var(--font-titles)', color: 'var(--essenza-gold)', fontSize: '2.2rem', letterSpacing: '1px' }}>
             Essenza
           </h1>
         </div>
       </header>
+
       <div className="container text-center mb-5">
-        <p className="lead fw-light" style={{ color: '#aaa', letterSpacing: '0.5px', fontSize: '1.8rem',fontFamily: 'var(--font-titles)' }}>
+        <p className="lead fw-light" style={{ color: '#aaa', letterSpacing: '0.5px', fontSize: '1.1rem' }}>
           El aroma es el vendedor invisible que fideliza al cliente.
         </p>
       </div>
@@ -62,7 +38,7 @@ function Catalogo() {
         <h2 className="text-center text-uppercase fw-light tracking-widest mb-5" style={{ fontSize: '1.5rem', color: 'rgba(181,160,114,0.7)' }}>Nuestro Catálogo</h2>
         
         <div className="row g-4">
-          {perfumesTemporales.map((perfume) => {
+          {productos.map((perfume) => {
             const mensajeWa = encodeURIComponent(`¡Hola Essenza! Me interesa el perfume "${perfume.nombre}" (${perfume.categoria}). ¿Tenés stock disponible?`);
             const urlWhatsapp = `https://wa.me/${whatsappContacto}?text=${mensajeWa}`;
 
@@ -117,11 +93,126 @@ function Catalogo() {
 }
 
 function PanelAdmin() {
+  const [formData, setFormData] = useState({
+    nombre: '',
+    categoria: 'Textil',
+    descripcion: '',
+    precio: ''
+  });
+
+  const handleChange = (e) => {
+    setFormData({ 
+      ...formData, 
+      [e.target.name]: e.target.value 
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); 
+    
+    try {
+      const response = await fetch('http://localhost:8080/api/productos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...formData,
+          precio: parseFloat(formData.precio)
+        })
+      });
+
+      if (response.ok) {
+        alert('¡Perfume guardado con éxito en la base de datos!');
+        setFormData({ nombre: '', categoria: 'Textil', descripcion: '', precio: '' });
+      } else {
+        alert('Hubo un problema al guardar el perfume.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error de conexión. ¿Está corriendo el backend en Visual Studio?');
+    }
+  };
+
   return (
-    <div className="container py-5">
-      <div className="card border-0 shadow p-5 text-center" style={{ backgroundColor: 'var(--essenza-card-bg)' }}>
-        <h2 className="fw-normal">Panel de Administración - Essenza</h2>
-        <p className="text-muted"></p>
+    <div className="min-vh-100 py-5" style={{ backgroundColor: 'var(--essenza-black)', color: 'var(--essenza-gold)' }}>
+      <div className="container">
+        <div className="row justify-content-center">
+          <div className="col-md-8 col-lg-6">
+            <div className="card border-0 shadow-lg" style={{ backgroundColor: 'var(--essenza-card-bg)' }}>
+              <div className="card-header border-bottom py-3" style={{ borderColor: '#333 !important', backgroundColor: 'transparent' }}>
+                <h2 className="h4 mb-0 text-center" style={{ fontFamily: 'var(--font-titles)' }}>Cargar Nuevo Producto</h2>
+              </div>
+              
+              <div className="card-body p-4">
+                <form onSubmit={handleSubmit}>
+                  
+                  {/* Campo: Nombre */}
+                  <div className="mb-3">
+                    <label className="form-label small text-uppercase tracking-widest text-muted">Nombre del Perfume</label>
+                    <input 
+                      type="text" 
+                      className="form-control bg-dark text-white border-secondary" 
+                      name="nombre"
+                      value={formData.nombre}
+                      onChange={handleChange}
+                      required 
+                    />
+                  </div>
+
+                  {/* Campo: Categoría */}
+                  <div className="mb-3">
+                    <label className="form-label small text-uppercase tracking-widest text-muted">Categoría</label>
+                    <select 
+                      className="form-select bg-dark text-white border-secondary"
+                      name="categoria"
+                      value={formData.categoria}
+                      onChange={handleChange}
+                    >
+                      <option value="Textil">Textil</option>
+                      <option value="Personal">Personal</option>
+                    </select>
+                  </div>
+
+                  {/* Campo: Descripción */}
+                  <div className="mb-3">
+                    <label className="form-label small text-uppercase tracking-widest text-muted">Descripción</label>
+                    <textarea 
+                      className="form-control bg-dark text-white border-secondary" 
+                      name="descripcion"
+                      rows="3"
+                      value={formData.descripcion}
+                      onChange={handleChange}
+                      required 
+                    ></textarea>
+                  </div>
+
+                  {/* Campo: Precio */}
+                  <div className="mb-4">
+                    <label className="form-label small text-uppercase tracking-widest text-muted">Precio ($)</label>
+                    <input 
+                      type="number" 
+                      className="form-control bg-dark text-white border-secondary" 
+                      name="precio"
+                      value={formData.precio}
+                      onChange={handleChange}
+                      required 
+                      min="0"
+                    />
+                  </div>
+
+                  {/* Botón de Enviar */}
+                  <div className="d-grid">
+                    <button type="submit" className="btn btn-gold rounded-pill py-2 text-uppercase fw-bold">
+                      Guardar en Catálogo
+                    </button>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
