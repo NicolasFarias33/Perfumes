@@ -4,7 +4,7 @@ import logoEssenza from './assets/essenza-logo.jpg';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
 function Catalogo() {
-  const whatsappContacto = "5493510000000";
+  const whatsappContacto = "3515414073";
   const [productos, setProductos] = useState([]);
 
   useEffect(() => {
@@ -47,8 +47,16 @@ function Catalogo() {
               <div key={perfume.id} className="col-11 col-sm-6 col-md-4 mx-auto">
                 <div className="card h-100 border-0 rounded-3 overflow-hidden shadow card-gold-trim" style={{ backgroundColor: 'var(--essenza-card-bg)' }}>
                   
-                  <div className="bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center" style={{ height: '240px', borderBottom: '1px solid #222' }}>
-                    <span className="text-uppercase small tracking-widest" style={{ color: 'rgba(181,160,114,0.4)', fontSize: '0.7rem' }}>Fragancia {perfume.categoria}</span>
+                  <div className="d-flex align-items-center justify-content-center" style={{ height: '240px', borderBottom: '1px solid #222', backgroundColor: '#000' }}>
+                    {perfume.urlImagen ? (
+                      <img 
+                        src={perfume.urlImagen} 
+                        alt={perfume.nombre} 
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                      />
+                    ) : (
+                      <span className="text-uppercase small tracking-widest" style={{ color: 'rgba(181,160,114,0.4)', fontSize: '0.7rem' }}>Sin imagen</span>
+                    )}
                   </div>
 
                   <div className="card-body d-flex flex-column p-4">
