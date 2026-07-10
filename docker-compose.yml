@@ -22,6 +22,9 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:sqlserver://database:1433;databaseName=db_essenza;encrypt=true;trustServerCertificate=true;
       - SPRING_DATASOURCE_USERNAME=sa
       - SPRING_DATASOURCE_PASSWORD=Contra1234
+      - CLOUDINARY_CLOUD_NAME=djj3jimt
+      - CLOUDINARY_API_KEY=666242494722161
+      - CLOUDINARY_API_SECRET=vQgzs8Wa9vGRfe2FJCMe1cYk0H4
 
   frontend:
     build: ./frontend
