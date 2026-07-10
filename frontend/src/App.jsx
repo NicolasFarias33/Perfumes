@@ -8,7 +8,7 @@ function Catalogo() {
   const [productos, setProductos] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/productos')
+    fetch(`${API_URL}/api/productos`)
       .then(response => response.json())
       .then(data => setProductos(data))
       .catch(error => console.error('Error al obtener los productos:', error));
