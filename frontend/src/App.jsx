@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import logoEssenza from './assets/essenza-logo.jpg';
 import StickyBar from './components/StickyBar';
 import SocialToast from './components/SocialToast';
+import BenefitsGrid from './components/BenefitsGrid';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
 function Catalogo() {
@@ -98,6 +99,7 @@ function Catalogo() {
           <SocialToast />
         </div>
       </main>
+      <BenefitsGrid />
 
       <footer className="text-center py-4 border-top text-muted small" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
         <p className="mb-0">essenza.cordoba@gmail.com</p>
