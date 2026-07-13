@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import logoEssenza from './assets/essenza-logo.jpg';
+import StickyBar from './components/StickyBar';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
 function Catalogo() {
@@ -18,10 +19,10 @@ function Catalogo() {
     <div className="min-vh-100">
       <header className="border-bottom py-3 mb-4" style={{ backgroundColor: 'var(--essenza-black)', borderColor: '#222' }}>
         <div className="container d-flex justify-content-between align-items-center">
-          <img 
-            src={logoEssenza} 
-            alt="Logo Essenza" 
-            style={{ height: '65px', width: '65px', objectFit: 'cover', borderRadius: '18px' }} 
+          <img
+            src={logoEssenza}
+            alt="Logo Essenza"
+            style={{ height: '65px', width: '65px', objectFit: 'cover', borderRadius: '18px' }}
           />
           <h1 className="m-0" style={{ fontFamily: 'var(--font-titles)', color: 'var(--essenza-gold)', fontSize: '2.2rem', letterSpacing: '1px' }}>
             Essenza
@@ -37,7 +38,7 @@ function Catalogo() {
 
       <main className="container pb-5">
         <h2 className="text-center text-uppercase fw-light tracking-widest mb-5" style={{ fontSize: '1.5rem', color: 'rgba(181,160,114,0.7)' }}>Nuestro Catálogo</h2>
-        
+
         <div className="row g-4">
           {productos.map((perfume) => {
             const mensajeWa = encodeURIComponent(`¡Hola Essenza! Me interesa el perfume "${perfume.nombre}" (${perfume.categoria}). ¿Tenés stock disponible?`);
@@ -46,13 +47,13 @@ function Catalogo() {
             return (
               <div key={perfume.id} className="col-11 col-sm-6 col-md-4 mx-auto">
                 <div className="card h-100 border-0 rounded-3 overflow-hidden shadow card-gold-trim" style={{ backgroundColor: 'var(--essenza-card-bg)' }}>
-                  
+
                   <div className="d-flex align-items-center justify-content-center" style={{ height: '240px', borderBottom: '1px solid #222', backgroundColor: '#000' }}>
                     {perfume.urlImagen ? (
-                      <img 
-                        src={perfume.urlImagen} 
-                        alt={perfume.nombre} 
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                      <img
+                        src={perfume.urlImagen}
+                        alt={perfume.nombre}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       />
                     ) : (
                       <span className="text-uppercase small tracking-widest" style={{ color: 'rgba(181,160,114,0.4)', fontSize: '0.7rem' }}>Sin imagen</span>
@@ -61,9 +62,8 @@ function Catalogo() {
 
                   <div className="card-body d-flex flex-column p-4">
                     <div className="d-flex justify-content-between align-items-start mb-2">
-                      <span className={`badge rounded-pill fw-normal px-3 py-2 ${
-                        perfume.categoria === 'Textil' ? 'bg-info bg-opacity-10 text-info' : 'bg-warning bg-opacity-10 text-warning'
-                      }`}>
+                      <span className={`badge rounded-pill fw-normal px-3 py-2 ${perfume.categoria === 'Textil' ? 'bg-info bg-opacity-10 text-info' : 'bg-warning bg-opacity-10 text-warning'
+                        }`}>
                         {perfume.categoria}
                       </span>
                     </div>
@@ -74,11 +74,13 @@ function Catalogo() {
                     </p>
 
                     <div className="pt-3 border-top d-flex align-items-center justify-content-between mt-3">
-                      <span className="fs-4 fw-bold" style={{ color: '#fff' }}>${perfume.precio.toLocaleString('es-AR')}</span>
-                      <a 
-                        href={urlWhatsapp} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
+                      <span className="fs-4 fw-bold" style={{ color: '#fff' }}>
+                        ${perfume.precio ? perfume.precio.toLocaleString('es-AR') : '0'}
+                      </span>                      
+                      <a
+                        href={urlWhatsapp}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="btn btn-gold rounded-pill px-4 btn-sm tracking-wide text-uppercase fw-bold"
                         style={{ fontSize: '0.75rem' }}
                       >
@@ -86,11 +88,11 @@ function Catalogo() {
                       </a>
                     </div>
                   </div>
-
                 </div>
               </div>
             );
           })}
+          <StickyBar whatsappContacto={whatsappContacto} />
         </div>
       </main>
 
@@ -106,7 +108,7 @@ function PanelAdmin() {
   const [formData, setFormData] = useState({
     nombre: '', categoria: 'Textil', descripcion: '', precio: ''
   });
-  
+
   const [imagen, setImagen] = useState(null);
   const [productos, setProductos] = useState([]);
 
@@ -134,7 +136,7 @@ function PanelAdmin() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const data = new FormData();
     data.append('nombre', formData.nombre);
     data.append('categoria', formData.categoria);
@@ -181,7 +183,7 @@ function PanelAdmin() {
     <div className="min-vh-100 py-5" style={{ backgroundColor: 'var(--essenza-black)', color: 'var(--essenza-gold)' }}>
       <div className="container">
         <div className="row justify-content-center g-4">
-          
+
           <div className="col-md-5">
             <div className="card border-0 shadow-lg h-100" style={{ backgroundColor: 'var(--essenza-card-bg)' }}>
               <div className="card-header border-bottom py-3" style={{ borderColor: '#333 !important', backgroundColor: 'transparent' }}>
@@ -206,7 +208,7 @@ function PanelAdmin() {
                   </div>
                   <div className="mb-3">
                     <label className="form-label small text-muted">Precio ($)</label>
-                    <input type="number" className="form-control bg-dark text-white border-secondary" name="precio" value={formData.precio} onChange={handleChange} required min="0"/>
+                    <input type="number" className="form-control bg-dark text-white border-secondary" name="precio" value={formData.precio} onChange={handleChange} required min="0" />
                   </div>
                   <div className="mb-4">
                     <label className="form-label small text-muted">Foto del Perfume</label>
@@ -239,10 +241,10 @@ function PanelAdmin() {
                       <tr key={p.id}>
                         <td className="align-middle">
                           {p.urlImagen ? (
-                            <img 
-                              src={p.urlImagen} 
-                              alt={p.nombre} 
-                              style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} 
+                            <img
+                              src={p.urlImagen}
+                              alt={p.nombre}
+                              style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }}
                             />
                           ) : (
                             <span className="badge bg-secondary">Sin foto</span>
@@ -263,7 +265,6 @@ function PanelAdmin() {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -282,6 +283,6 @@ function App() {
       </Routes>
     </BrowserRouter>
   );
-}   
+}
 
 export default App;
