@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import logoEssenza from './assets/essenza-logo.jpg';
 import StickyBar from './components/StickyBar';
+import SocialToast from './components/SocialToast';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
 function Catalogo() {
@@ -93,6 +94,8 @@ function Catalogo() {
             );
           })}
           <StickyBar whatsappContacto={whatsappContacto} />
+          <StickyBar whatsappContacto={whatsappContacto} />
+          <SocialToast />
         </div>
       </main>
 
