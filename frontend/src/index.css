@@ -1,10 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400&display=swap');
 
 :root {
-  --essenza-black: #121212; 
-  --essenza-gold: #b5a072;  
+  --essenza-black: #000000;
+  --essenza-gold: #b5a072;
+  --essenza-text: #D8D8F6;
   --essenza-card-bg: #1a1a1a;
-  
+
   --font-titles: 'Playfair Display', serif;
   --font-body: 'Roboto', sans-serif;
 }
@@ -14,13 +15,15 @@ body {
   background-color: var(--essenza-black);
   color: var(--essenza-gold);
   font-family: var(--font-body);
-  background-image: url('https://www.transparenttextures.com/patterns/dark-paper.png');
+  background-image: url('https://www.transparenttextures.com/patterns/black-paper.png');
 }
 
 h1, h2, h3, h4 {
   font-family: var(--font-titles);
   color: var(--essenza-gold);
 }
+
+.card-title { color: var(--essenza-text); }
 
 .text-muted { color: #888 !important; }
 .bg-light { background-color: var(--essenza-black) !important; }

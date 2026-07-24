@@ -19,7 +19,7 @@ function Catalogo() {
 
   return (
     <div className="min-vh-100">
-      <header className="border-bottom py-3 mb-4" style={{ backgroundColor: 'var(--essenza-black)', borderColor: '#222' }}>
+      <header className="border-bottom py-3 mb-4" style={{ borderColor: '#222' }}>
         <div className="container d-flex justify-content-between align-items-center">
           <img
             src={logoEssenza}
@@ -70,7 +70,7 @@ function Catalogo() {
                       </span>
                     </div>
 
-                    <h3 className="h5 card-title fw-bold mb-2">{perfume.nombre}</h3>
+                    <h3 className="card-title fw-bold mb-2">{perfume.nombre}</h3>
                     <p className="card-text text-muted small flex-grow-1 line-height-base fw-light">
                       {perfume.descripcion}
                     </p>
@@ -78,7 +78,7 @@ function Catalogo() {
                     <div className="pt-3 border-top d-flex align-items-center justify-content-between mt-3">
                       <span className="fs-4 fw-bold" style={{ color: '#fff' }}>
                         ${perfume.precio ? perfume.precio.toLocaleString('es-AR') : '0'}
-                      </span>                      
+                      </span>
                       <a
                         href={urlWhatsapp}
                         target="_blank"
@@ -95,13 +95,12 @@ function Catalogo() {
             );
           })}
           <StickyBar whatsappContacto={whatsappContacto} />
-          <StickyBar whatsappContacto={whatsappContacto} />
           <SocialToast />
         </div>
       </main>
       <BenefitsGrid />
 
-      <footer className="text-center pt-4 border-top text-muted small" style={{ backgroundColor: 'rgba(0,0,0,0.5)', paddingBottom: '120px' }}>
+      <footer className="text-center pt-4 border-top text-muted small" style={{ paddingBottom: '120px' }}>
         <p className="mb-0">essenza.cordoba@gmail.com</p>
         <p className="mb-0">&copy; {new Date().getFullYear()} Essenza - Fragancias de Autor.</p>
       </footer>

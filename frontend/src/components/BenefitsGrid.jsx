@@ -46,7 +46,7 @@ const BenefitsGrid = () => {
   ];
 
   return (
-    <section className="py-5 mt-4" style={{ backgroundColor: 'var(--essenza-black)', borderTop: '1px solid rgba(181,160,114,0.15)' }}>
+    <section className="py-5 mt-4" style={{ borderTop: '1px solid rgba(181,160,114,0.15)' }}>
       <div className="container">
         <div className="text-center mb-5">
           <h2 className="text-uppercase fw-light tracking-widest mb-3" style={{ fontSize: '1.8rem', color: 'var(--essenza-gold)' }}>
@@ -61,13 +61,13 @@ const BenefitsGrid = () => {
           {benefits.map((item, index) => (
             <div key={index} className="col-12 col-md-6 col-lg-3">
               <div className="benefit-card h-100 d-flex flex-column align-items-center text-center p-4">
-                
-                <div 
+
+                <div
                   className="icon-circle mb-4 d-flex justify-content-center align-items-center"
-                  style={{ 
-                    width: '80px', 
-                    height: '80px', 
-                    borderRadius: '50%', 
+                  style={{
+                    width: '80px',
+                    height: '80px',
+                    borderRadius: '50%',
                     border: '1px solid rgba(181,160,114,0.3)',
                     color: 'var(--essenza-gold)',
                     transition: 'all 0.3s ease'
