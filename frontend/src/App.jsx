@@ -101,7 +101,7 @@ function Catalogo() {
       </main>
       <BenefitsGrid />
 
-      <footer className="text-center py-4 border-top text-muted small" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+      <footer className="text-center pt-4 border-top text-muted small" style={{ backgroundColor: 'rgba(0,0,0,0.5)', paddingBottom: '120px' }}>
         <p className="mb-0">essenza.cordoba@gmail.com</p>
         <p className="mb-0">&copy; {new Date().getFullYear()} Essenza - Fragancias de Autor.</p>
       </footer>
