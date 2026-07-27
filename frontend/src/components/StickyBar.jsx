@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ContactPill from './ContactPill';
 
 const StickyBar = ({ whatsappContacto }) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -38,15 +39,14 @@ const StickyBar = ({ whatsappContacto }) => {
         <span className="text-white small">Asesoramiento personalizado</span>
       </div>
 
-      <a
+      <ContactPill
         href={urlWhatsapp}
         target="_blank"
         rel="noopener noreferrer"
-        className="btn btn-gold rounded-pill px-4 fw-bold text-uppercase"
         style={{ fontSize: '0.8rem', padding: '10px 20px' }}
       >
         Contactar 💬
-      </a>
+      </ContactPill>
 
       <style>
         {`

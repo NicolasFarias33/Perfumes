@@ -4,6 +4,11 @@ import logoEssenza from './assets/essenza-logo.jpg';
 import StickyBar from './components/StickyBar';
 import SocialToast from './components/SocialToast';
 import BenefitsGrid from './components/BenefitsGrid';
+import VolumePill from './components/VolumePill';
+import FragrancePills from './components/FragrancePills';
+import CategoryPill from './components/CategoryPill';
+import ContactPill from './components/ContactPill';
+import FragrancePicker from './components/FragrancePicker';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
 function Catalogo() {
@@ -63,31 +68,26 @@ function Catalogo() {
                   </div>
 
                   <div className="card-body d-flex flex-column p-4">
-                    <div className="d-flex justify-content-between align-items-start mb-2">
-                      <span className={`badge rounded-pill fw-normal px-3 py-2 ${perfume.categoria === 'Textil' ? 'bg-info bg-opacity-10 text-info' : 'bg-warning bg-opacity-10 text-warning'
-                        }`}>
-                        {perfume.categoria}
-                      </span>
+                    <div className="d-flex justify-content-between align-items-center mb-2">
+                      <h3 className="card-title fw-bold mb-0">{perfume.nombre}</h3>
+                      <CategoryPill categoria={perfume.categoria} />
+                    </div>
+                    <div className="d-flex justify-content-between align-items-start gap-3 flex-grow-1">
+                      <p className="card-text text-muted small line-height-base fw-light mb-0">
+                        {perfume.descripcion}
+                      </p>
+                      <VolumePill volumen={perfume.volumen} />
                     </div>
 
-                    <h3 className="card-title fw-bold mb-2">{perfume.nombre}</h3>
-                    <p className="card-text text-muted small flex-grow-1 line-height-base fw-light">
-                      {perfume.descripcion}
-                    </p>
+                    <FragrancePills fragancias={perfume.fragancias} />
 
                     <div className="pt-3 border-top d-flex align-items-center justify-content-between mt-3">
                       <span className="fs-4 fw-bold" style={{ color: '#fff' }}>
                         ${perfume.precio ? perfume.precio.toLocaleString('es-AR') : '0'}
                       </span>
-                      <a
-                        href={urlWhatsapp}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-gold rounded-pill px-4 btn-sm tracking-wide text-uppercase fw-bold"
-                        style={{ fontSize: '0.75rem' }}
-                      >
+                      <ContactPill href={urlWhatsapp}>
                         Consultar 💬
-                      </a>
+                      </ContactPill>
                     </div>
                   </div>
                 </div>
@@ -110,7 +110,7 @@ function Catalogo() {
 
 function PanelAdmin() {
   const [formData, setFormData] = useState({
-    nombre: '', categoria: 'Textil', descripcion: '', precio: ''
+    nombre: '', categoria: 'Textil', descripcion: '', precio: '', volumen: '', fragancias: []
   });
 
   const [imagen, setImagen] = useState(null);
@@ -131,7 +131,24 @@ function PanelAdmin() {
   }, []);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    if (name === 'fragancias') {
+      return;
+    }
+    if (type === 'checkbox') {
+      setFormData({ ...formData, [name]: checked });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
+  };
+
+  const handleFragranceToggle = (fragrance) => {
+    setFormData(prev => ({
+      ...prev,
+      fragancias: prev.fragancias.includes(fragrance)
+        ? prev.fragancias.filter(f => f !== fragrance)
+        : [...prev.fragancias, fragrance]
+    }));
   };
 
   const handleFileChange = (e) => {
@@ -146,6 +163,8 @@ function PanelAdmin() {
     data.append('categoria', formData.categoria);
     data.append('descripcion', formData.descripcion);
     data.append('precio', formData.precio);
+    data.append('volumen', formData.volumen);
+    data.append('fragancias', formData.fragancias.join(', '));
     if (imagen) {
       data.append('imagen', imagen);
     }
@@ -158,7 +177,7 @@ function PanelAdmin() {
 
       if (response.ok) {
         alert('¡Perfume guardado con imagen en la nube!');
-        setFormData({ nombre: '', categoria: 'Textil', descripcion: '', precio: '' });
+        setFormData({ nombre: '', categoria: 'Textil', descripcion: '', precio: '', volumen: '', fragancias: [] });
         setImagen(null);
         document.getElementById('imagenInput').value = '';
         cargarProductos();
@@ -213,6 +232,17 @@ function PanelAdmin() {
                   <div className="mb-3">
                     <label className="form-label small text-muted">Precio ($)</label>
                     <input type="number" className="form-control bg-dark text-white border-secondary" name="precio" value={formData.precio} onChange={handleChange} required min="0" />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label small text-muted">Volumen (ml)</label>
+                    <input type="number" className="form-control bg-dark text-white border-secondary" name="volumen" value={formData.volumen} onChange={handleChange} placeholder="100" min="1" />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label small text-muted">Fragancias / Notas</label>
+                    <FragrancePicker
+                      selected={formData.fragancias}
+                      onChange={handleFragranceToggle}
+                    />
                   </div>
                   <div className="mb-4">
                     <label className="form-label small text-muted">Foto del Perfume</label>
