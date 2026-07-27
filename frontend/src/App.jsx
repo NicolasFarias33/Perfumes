@@ -4,6 +4,12 @@ import logoEssenza from './assets/essenza-logo.jpg';
 import StickyBar from './components/StickyBar';
 import SocialToast from './components/SocialToast';
 import BenefitsGrid from './components/BenefitsGrid';
+import VolumePill from './components/VolumePill';
+import FragrancePills from './components/FragrancePills';
+import CategoryPill from './components/CategoryPill';
+import ContactPill from './components/ContactPill';
+import FragrancePicker from './components/FragrancePicker';
+import { getFragranceColor } from './data/fragrances';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
 function Catalogo() {
@@ -63,31 +69,26 @@ function Catalogo() {
                   </div>
 
                   <div className="card-body d-flex flex-column p-4">
-                    <div className="d-flex justify-content-between align-items-start mb-2">
-                      <span className={`badge rounded-pill fw-normal px-3 py-2 ${perfume.categoria === 'Textil' ? 'bg-info bg-opacity-10 text-info' : 'bg-warning bg-opacity-10 text-warning'
-                        }`}>
-                        {perfume.categoria}
-                      </span>
+                    <div className="d-flex justify-content-between align-items-center mb-2">
+                      <h3 className="card-title fw-bold mb-0">{perfume.nombre}</h3>
+                      <CategoryPill categoria={perfume.categoria} />
+                    </div>
+                    <div className="d-flex justify-content-between align-items-start gap-3 flex-grow-1">
+                      <p className="card-text text-muted small line-height-base fw-light mb-0">
+                        {perfume.descripcion}
+                      </p>
+                      <VolumePill volumen={perfume.volumen} />
                     </div>
 
-                    <h3 className="card-title fw-bold mb-2">{perfume.nombre}</h3>
-                    <p className="card-text text-muted small flex-grow-1 line-height-base fw-light">
-                      {perfume.descripcion}
-                    </p>
+                    <FragrancePills fragancias={perfume.fragancias} />
 
                     <div className="pt-3 border-top d-flex align-items-center justify-content-between mt-3">
                       <span className="fs-4 fw-bold" style={{ color: '#fff' }}>
                         ${perfume.precio ? perfume.precio.toLocaleString('es-AR') : '0'}
                       </span>
-                      <a
-                        href={urlWhatsapp}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-gold rounded-pill px-4 btn-sm tracking-wide text-uppercase fw-bold"
-                        style={{ fontSize: '0.75rem' }}
-                      >
+                      <ContactPill href={urlWhatsapp}>
                         Consultar 💬
-                      </a>
+                      </ContactPill>
                     </div>
                   </div>
                 </div>
@@ -110,11 +111,16 @@ function Catalogo() {
 
 function PanelAdmin() {
   const [formData, setFormData] = useState({
-    nombre: '', categoria: 'Textil', descripcion: '', precio: ''
+    nombre: '', categoria: 'Textil', descripcion: '', precio: '', volumen: '', fragancias: []
   });
 
   const [imagen, setImagen] = useState(null);
   const [productos, setProductos] = useState([]);
+  const [fraganciasDisponibles, setFraganciasDisponibles] = useState([]);
+  const [fraganciaNombre, setFraganciaNombre] = useState('');
+  const [fraganciaColor, setFraganciaColor] = useState('#b5a072');
+  const [fraganciaFeedback, setFraganciaFeedback] = useState(null);
+  const [cargandoFragancias, setCargandoFragancias] = useState(true);
 
   const cargarProductos = async () => {
     try {
@@ -126,12 +132,83 @@ function PanelAdmin() {
     }
   };
 
+  const cargarFragancias = async () => {
+    try {
+      setCargandoFragancias(true);
+      const res = await fetch(`${API_URL}/api/fragancias`);
+      if (res.ok) setFraganciasDisponibles(await res.json());
+    } catch (e) {
+      console.error('Error al cargar fragancias:', e);
+    } finally {
+      setCargandoFragancias(false);
+    }
+  };
+
   useEffect(() => {
     cargarProductos();
+    cargarFragancias();
   }, []);
 
+  const handleAddFragancia = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${API_URL}/api/fragancias`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre: fraganciaNombre, color: fraganciaColor })
+      });
+      if (response.ok) {
+        const nuevaFragancia = await response.json();
+        setFraganciasDisponibles(prev => [...prev, nuevaFragancia]);
+        setFraganciaNombre('');
+        setFraganciaColor('#b5a072');
+        setFraganciaFeedback({ type: 'success', message: 'Fragancia agregada correctamente' });
+        setTimeout(() => setFraganciaFeedback(null), 3000);
+      }
+    } catch (error) {
+      console.error('Error al agregar fragancia:', error);
+    }
+  };
+
+  const handleDeleteFragancia = async (id) => {
+    if (window.confirm('¿Estás seguro de que querés eliminar esta fragancia?')) {
+      try {
+        const response = await fetch(`${API_URL}/api/fragancias/${id}`, {
+          method: 'DELETE'
+        });
+        if (response.ok) {
+          setFraganciasDisponibles(prev => prev.filter(f => f.id !== id));
+        }
+      } catch (error) {
+        console.error('Error al eliminar fragancia:', error);
+      }
+    }
+  };
+
+  const todasLasFragancias = fraganciasDisponibles.map(f => f.nombre);
+
+  const coloresCombinados = {};
+  fraganciasDisponibles.forEach(f => { coloresCombinados[f.nombre] = f.color; });
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    if (name === 'fragancias') {
+      return;
+    }
+    if (type === 'checkbox') {
+      setFormData({ ...formData, [name]: checked });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
+  };
+
+  const handleFragranceToggle = (fragrance) => {
+    setFormData(prev => ({
+      ...prev,
+      fragancias: prev.fragancias.includes(fragrance)
+        ? prev.fragancias.filter(f => f !== fragrance)
+        : [...prev.fragancias, fragrance]
+    }));
   };
 
   const handleFileChange = (e) => {
@@ -146,6 +223,8 @@ function PanelAdmin() {
     data.append('categoria', formData.categoria);
     data.append('descripcion', formData.descripcion);
     data.append('precio', formData.precio);
+    data.append('volumen', formData.volumen);
+    data.append('fragancias', formData.fragancias.join(', '));
     if (imagen) {
       data.append('imagen', imagen);
     }
@@ -158,7 +237,7 @@ function PanelAdmin() {
 
       if (response.ok) {
         alert('¡Perfume guardado con imagen en la nube!');
-        setFormData({ nombre: '', categoria: 'Textil', descripcion: '', precio: '' });
+        setFormData({ nombre: '', categoria: 'Textil', descripcion: '', precio: '', volumen: '', fragancias: [] });
         setImagen(null);
         document.getElementById('imagenInput').value = '';
         cargarProductos();
@@ -191,7 +270,7 @@ function PanelAdmin() {
           <div className="col-md-5">
             <div className="card border-0 shadow-lg h-100" style={{ backgroundColor: 'var(--essenza-card-bg)' }}>
               <div className="card-header border-bottom py-3" style={{ borderColor: '#333 !important', backgroundColor: 'transparent' }}>
-                <h2 className="h4 mb-0 text-center" style={{ fontFamily: 'var(--font-titles)' }}>Nuevo Producto</h2>
+                <h2 className="h4 mb-0 text-center" style={{ fontFamily: 'var(--font-titles)', color: 'var(--essenza-text)'}}>Nuevo Producto</h2>
               </div>
               <div className="card-body p-4">
                 <form onSubmit={handleSubmit}>
@@ -214,6 +293,19 @@ function PanelAdmin() {
                     <label className="form-label small text-muted">Precio ($)</label>
                     <input type="number" className="form-control bg-dark text-white border-secondary" name="precio" value={formData.precio} onChange={handleChange} required min="0" />
                   </div>
+                  <div className="mb-3">
+                    <label className="form-label small text-muted">Volumen (ml)</label>
+                    <input type="number" className="form-control bg-dark text-white border-secondary" name="volumen" value={formData.volumen} onChange={handleChange} placeholder="100" min="1" />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label small text-muted">Fragancias / Notas</label>
+                    <FragrancePicker
+                      selected={formData.fragancias}
+                      onChange={handleFragranceToggle}
+                      available={todasLasFragancias}
+                      availableColors={coloresCombinados}
+                    />
+                  </div>
                   <div className="mb-4">
                     <label className="form-label small text-muted">Foto del Perfume</label>
                     <input id="imagenInput" type="file" className="form-control bg-dark text-white border-secondary" accept="image/*" onChange={handleFileChange} required />
@@ -227,7 +319,7 @@ function PanelAdmin() {
           <div className="col-md-7">
             <div className="card border-0 shadow-lg h-100" style={{ backgroundColor: 'var(--essenza-card-bg)' }}>
               <div className="card-header border-bottom py-3" style={{ borderColor: '#333 !important', backgroundColor: 'transparent' }}>
-                <h2 className="h4 mb-0 text-center" style={{ fontFamily: 'var(--font-titles)' }}>Inventario Actual</h2>
+                <h2 className="h4 mb-0 text-center" style={{ fontFamily: 'var(--font-titles)', color: 'var(--essenza-text)' }}>Inventario Actual</h2>
               </div>
               <div className="card-body p-0 overflow-auto" style={{ maxHeight: '500px' }}>
                 <table className="table table-dark table-hover mb-0">
@@ -266,6 +358,97 @@ function PanelAdmin() {
                     ))}
                   </tbody>
                 </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="row justify-content-center mt-4">
+          <div className="col-md-8">
+            <div className="card border-0 shadow-lg" style={{ backgroundColor: 'var(--essenza-card-bg)' }}>
+              <div className="card-header border-bottom py-3" style={{ borderColor: '#333 !important', backgroundColor: 'transparent' }}>
+                <h2 className="h4 mb-0 text-center" style={{ fontFamily: 'var(--font-titles)', color: 'var(--essenza-text)' }}>Gestionar Fragancias</h2>
+              </div>
+              <div className="card-body p-4">
+                <div className="row">
+                  <div className="col-md-5">
+                    <form onSubmit={handleAddFragancia}>
+                      <div className="mb-3">
+                        <label className="form-label small text-muted">Nombre</label>
+                        <input
+                          type="text"
+                          className="form-control bg-dark text-white border-secondary"
+                          value={fraganciaNombre}
+                          onChange={(e) => setFraganciaNombre(e.target.value)}
+                          required
+                          placeholder="Ej: Amaderado"
+                        />
+                      </div>
+                      <div className="mb-3">
+                        <label className="form-label small text-muted">Color</label>
+                        <div className="d-flex align-items-center gap-3">
+                          <input
+                            type="color"
+                            className="form-control form-control-color"
+                            value={fraganciaColor}
+                            onChange={(e) => setFraganciaColor(e.target.value)}
+                            style={{ width: '50px', height: '38px', cursor: 'pointer' }}
+                          />
+                          <span className="small text-muted">{fraganciaColor}</span>
+                        </div>
+                      </div>
+                      <button type="submit" className="btn btn-gold w-100 rounded-pill fw-bold">
+                        Agregar Fragancia
+                      </button>
+                      {fraganciaFeedback && (
+                        <div className={`mt-2 small text-${fraganciaFeedback.type === 'success' ? 'success' : 'danger'}`}>
+                          {fraganciaFeedback.message}
+                        </div>
+                      )}
+                    </form>
+                  </div>
+                  <div className="col-md-7">
+                    {cargandoFragancias ? (
+                      <div className="text-center py-4 text-muted">
+                        <div className="spinner-border spinner-border-sm text-secondary" role="status" />
+                        <span className="ms-2 small">Cargando fragancias...</span>
+                      </div>
+                    ) : fraganciasDisponibles.length === 0 ? (
+                      <p className="text-muted text-center py-4 mb-0">No hay fragancias aún</p>
+                    ) : (
+                      <div className="d-flex flex-column gap-2" style={{ maxHeight: '250px', overflowY: 'auto' }}>
+                        {fraganciasDisponibles.map((f) => (
+                          <div
+                            key={f.id}
+                            className="d-flex align-items-center justify-content-between px-3 py-2 rounded"
+                            style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}
+                          >
+                            <div className="d-flex align-items-center gap-2">
+                              <span
+                                style={{
+                                  display: 'inline-block',
+                                  width: '16px',
+                                  height: '16px',
+                                  borderRadius: '4px',
+                                  backgroundColor: f.color,
+                                  border: '1px solid rgba(255,255,255,0.15)'
+                                }}
+                              />
+                              <span className="small text-white">{f.nombre}</span>
+                            </div>
+                            <button
+                              onClick={() => handleDeleteFragancia(f.id)}
+                              className="btn btn-sm btn-outline-danger rounded-pill px-2 py-0"
+                              style={{ fontSize: '0.65rem' }}
+                            >
+                              Borrar
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
