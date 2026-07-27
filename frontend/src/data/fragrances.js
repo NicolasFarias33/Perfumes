@@ -1,28 +1,4 @@
-export const FRAGRANCES = [
-  'Cítrico',
-  'Floral',
-  'Amaderado',
-  'Oriental',
-  'Fresco',
-  'Especiado',
-  'Verde',
-  'Frutal',
-  'Almizcle',
-  'Ámbar',
-  'Vainilla',
-  'Sándalo',
-  'Bergamota',
-  'Pachulí',
-  'Rosa',
-  'Jazmín',
-  'Lavanda',
-  'Cedro',
-  'Vetiver',
-  'Haba Tonka',
-  'Oud'
-];
-
-export const FRAGRANCE_COLORS = {
+const FRAGRANCE_COLORS = {
   'Cítrico': '#f5c542',
   'Floral': '#e879f9',
   'Amaderado': '#a3b18a',
